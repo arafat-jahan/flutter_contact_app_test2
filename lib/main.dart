@@ -61,7 +61,7 @@ class _ContactListAppState extends State<ContactListApp> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('LiveTest 2'),
+        title: Text('Contact List'),
         centerTitle: true,
       ),
       body: Padding(
