@@ -1,59 +1,55 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(ContactApp());
-
-class ContactApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ContactListScreen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: ContactListApp(),
+  ));
 }
 
-class ContactListScreen extends StatefulWidget {
+class ContactListApp extends StatefulWidget {
   @override
-  _ContactListScreenState createState() => _ContactListScreenState();
+  _ContactListAppState createState() => _ContactListAppState();
 }
 
-class _ContactListScreenState extends State<ContactListScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController numberController = TextEditingController();
+class _ContactListAppState extends State<ContactListApp> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController();
 
-  List<Map<String, String>> contacts = [];
+  final List<Map<String, String>> contacts = [];
 
-  void addContact() {
-    final name = nameController.text.trim();
-    final number = numberController.text.trim();
+  void _addContact() {
+    final String name = _nameController.text.trim();
+    final String number = _numberController.text.trim();
+
     if (name.isNotEmpty && number.isNotEmpty) {
       setState(() {
         contacts.add({'name': name, 'number': number});
-        nameController.clear();
-        numberController.clear();
+        _nameController.clear();
+        _numberController.clear();
       });
     }
   }
 
-  void confirmDelete(int index) {
+  void _showDeleteDialog(int index) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Confirmation'),
-        content: Text('Are you sure for Delete?'),
+      builder: (context) => AlertDialog(
+        title: Text('Delete Contact?'),
+        content: Text('Are you sure you want to delete this contact?'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.cancel),
-            onPressed: () => Navigator.pop(ctx),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
           ),
-          IconButton(
-            icon: Icon(Icons.delete),
+          ElevatedButton(
             onPressed: () {
               setState(() {
                 contacts.removeAt(index);
               });
-              Navigator.pop(ctx);
+              Navigator.pop(context);
             },
+            child: Text('Delete'),
           ),
         ],
       ),
@@ -63,18 +59,18 @@ class _ContactListScreenState extends State<ContactListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Overall white background
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('Contact List'),
-        backgroundColor: Colors.blueGrey,
+        title: Text('LiveTest 2'),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Input Fields
             TextField(
-              controller: nameController,
+              controller: _nameController,
               decoration: InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
@@ -82,55 +78,70 @@ class _ContactListScreenState extends State<ContactListScreen> {
             ),
             SizedBox(height: 10),
             TextField(
-              controller: numberController,
+              controller: _numberController,
               decoration: InputDecoration(
                 labelText: 'Number',
                 border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 10),
-            Container(
+            // Add Button
+            SizedBox(
               width: double.infinity,
-              height: 40,
+              height: 45,
               child: ElevatedButton(
+                onPressed: _addContact,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
+                  backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, // square button
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                onPressed: addContact,
                 child: Text(
                   'Add',
-                  style: TextStyle(color: Colors.white), // white text
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 16),
+            // Contact List
             Expanded(
-              child: ListView.builder(
+              child: contacts.isEmpty
+                  ? Center(child: Text('No contacts yet.'))
+                  : ListView.builder(
                 itemCount: contacts.length,
                 itemBuilder: (context, index) {
                   final contact = contacts[index];
                   return GestureDetector(
-                    onLongPress: () => confirmDelete(index),
-                    child: Container(
-                      color: Colors.white, // white background for each list tile
+                    onLongPress: () => _showDeleteDialog(index),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 3,
+                      margin: EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 4),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       child: ListTile(
-                        leading: Icon(Icons.account_circle),
+                        leading:
+                        Icon(Icons.person, color: Colors.brown[700]),
                         title: Text(
-                          contact['name'] ?? '',
-                          style: TextStyle(color: Colors.red), // red name text
+                          contact['name']!,
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(contact['number'] ?? ''),
-                        trailing: Icon(Icons.call, color: Colors.blueAccent),
+                        subtitle: Text(
+                          contact['number']!,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        trailing: Icon(Icons.call, color: Colors.green),
                       ),
                     ),
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),
