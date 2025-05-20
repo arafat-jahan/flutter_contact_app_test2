@@ -6,7 +6,7 @@ A simple Flutter application that lets users input a name and number, add it to 
 
 ## 📸 Screenshots
 
-| UI Design | Contact List | Adding Contact |
+| Contact List |  Adding Contact | Delete Confirmation Message |
 |-----------|--------------|---------------|
 | ![Contact List](https://i.imgur.com/w16xUfs.jpeg) | ![Adding Contact](https://i.imgur.com/jfYj9Xb.jpeg) | ![Delete Confirmation](https://i.imgur.com/3E18kgG.jpeg) |
 
